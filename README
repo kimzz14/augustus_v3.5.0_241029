@@ -1,0 +1,6 @@
+conda create -n augustus_v3.5.0_241029
+
+source activate augustus_v3.5.0_241029
+
+conda install augustus
+#bioconda/linux-64::augustus-3.5.0-pl5321heb9362c_5
