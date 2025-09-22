@@ -1,6 +1,41 @@
-conda create -n augustus_v3.5.0_241029
+conda create -n augustus_v3.5.0_241029 augustus
 
-source activate augustus_v3.5.0_241029
+#source activate augustus_v3.5.0_241029
 
-conda install augustus
+#conda install augustus
 #bioconda/linux-64::augustus-3.5.0-pl5321heb9362c_5
+
+# 0) 사전: soft-masked genome.fa, AUGUSTUS_CONFIG_PATH 환경변수 확인
+
+# 1) RNA-seq 정렬
+hisat2 -p 48 -x wheat_index -1 R1.fq.gz -2 R2.fq.gz | \
+  samtools sort -@ 32 -o rnaseq.sorted.bam
+samtools index rnaseq.sorted.bam
+
+use hisat2-T001.sh
+
+# 2) Long-read 정렬(선택)
+minimap2 -t 48 -ax splice -uf -k14 genome.fa FLNC.fq.gz | \
+  samtools sort -@ 32 -o longrna.sorted.bam
+samtools index longrna.sorted.bam
+
+use minimap2-T113.sh
+
+# 3) hints 생성
+bam2hints --in=rnaseq.sorted.bam  --out=hints.rnaseq.gff  --intronsonly \
+          --minintronlen=20 --maxintronlen=200000 --priority=4
+bam2hints --in=longrna.sorted.bam --out=hints.longrna.gff \
+          --minintronlen=20 --maxintronlen=200000 --priority=6
+
+# 4) Protein 힌트(선택, ProtHint 결과 사용)
+# prothint_augustus.gff 가 있다고 가정
+
+# 5) hints 합치기
+cat hints.rnaseq.gff hints.longrna.gff prothint_augustus.gff > hints.all.gff
+
+# 6) 예측
+augustus --species=closest_species \
+         --hintsfile=hints.all.gff \
+         --extrinsicCfgFile=${AUGUSTUS_CONFIG_PATH}/extrinsic/extrinsic.ME.cfg \
+         --softmasking=on --UTR=on --allow_hinted_splicesites=atac \
+         genome.fa > augustus.hints.gff
