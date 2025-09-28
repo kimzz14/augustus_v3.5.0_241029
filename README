@@ -1,9 +1,11 @@
-conda create -n augustus_v3.5.0_241029 augustus
+conda create -n augustus_v3.5.0_241029 augustus agat gffread
+#bioconda/linux-64::augustus-3.5.0-pl5321heb9362c_5
+#bioconda/noarch::agat-1.5.1-pl5321hdfd78af_0
 
 #source activate augustus_v3.5.0_241029
 
 #conda install augustus
-#bioconda/linux-64::augustus-3.5.0-pl5321heb9362c_5
+
 
 # 0) 사전: soft-masked genome.fa, AUGUSTUS_CONFIG_PATH 환경변수 확인
 
