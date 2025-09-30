@@ -1,4 +1,4 @@
-conda create -n augustus_v3.5.0_241029 augustus agat gffread
+conda create -n augustus_v3.5.0_241029 augustus agat
 #bioconda/linux-64::augustus-3.5.0-pl5321heb9362c_5
 #bioconda/noarch::agat-1.5.1-pl5321hdfd78af_0
 

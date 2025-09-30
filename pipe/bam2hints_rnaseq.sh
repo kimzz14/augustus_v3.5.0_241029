@@ -7,5 +7,3 @@ bam2hints \
     --priority=4 \
     1> hints.rnaseq.gff.log \
     2> hints.rnaseq.gff.err
-
-
